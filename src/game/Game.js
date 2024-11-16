@@ -75,8 +75,14 @@ class Game {
   }
 
   generateRoomCode() {
-    return Math.random().toString(36).substring(2, 7).toUpperCase();
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let roomCode = "";
+    for (let i = 0; i < 5; i++) {
+      roomCode += letters[Math.floor(Math.random() * letters.length)];
+    }
+    return roomCode;
   }
+
 }
 
 module.exports = Game;

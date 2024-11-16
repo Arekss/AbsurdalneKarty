@@ -4,7 +4,10 @@
 6. Count and display scores
 7. On providing wrong room code on join, keep old display
 8. startGame and startNewRound remove duplications
-
+9. Podaj nick bez pop upu
+11. Dodaj score do tablicy
+12. Z prawej strony wyswietl poprzednie pytanie i odpowiedz
+13. Dodaj do statusu udzielono odpowiedzi na zielono
 
 DONE
 2. Highlight current round master

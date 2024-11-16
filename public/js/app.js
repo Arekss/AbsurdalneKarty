@@ -15,18 +15,18 @@ let selectedWinnerId = null; // Track the selected winner
 
 // Room creation and joining
 document.getElementById('createRoom').addEventListener('click', () => {
- // const playerName = prompt("Enter your name:");
- // if (!playerName) return;
- const playerName = generateRandomString(6);
+  const playerName = prompt("Enter your name:");
+  if (!playerName) return;
+  //const playerName = generateRandomString(6);
   socket.emit('createRoom', { playerName });
 
 
 });
 
 document.getElementById('joinRoom').addEventListener('click', () => {
- // const playerName = prompt("Enter your name:");
-  //if (!playerName) return;
-  const playerName = generateRandomString(6);
+  const playerName = prompt("Enter your name:");
+  if (!playerName) return;
+  //const playerName = generateRandomString(6);
   const roomCode = document.getElementById('joinCode').value;
   socket.emit('joinRoom', { roomCode, playerName });
 
@@ -39,7 +39,7 @@ document.getElementById('joinRoom').addEventListener('click', () => {
 socket.on('roomCreated', (data) => {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
-  document.getElementById('roomCodeDisplay').textContent = `Room Code: ${data.roomCode}`;
+  document.getElementById('roomCodeDisplay').textContent = `Kod Pokoju: ${data.roomCode}`;
   document.getElementById('startGame').style.display = 'block';  // Show start game button for room creator
   document.getElementById('playerListContainer').style.display = 'block';
 });
@@ -68,7 +68,7 @@ socket.on('updateRoomDisplay', (data) => {
     // Create the status cell for the round master indicator
     const roundMasterCell = document.createElement('td');
     if (player.id === data.roundMaster) {
-      roundMasterCell.textContent = 'round master';
+      roundMasterCell.textContent = 'mistrz rundy';
       roundMasterCell.classList.add('round-master-indicator'); // Apply purple styling
     }
 
@@ -84,7 +84,7 @@ socket.on('updateRoomDisplay', (data) => {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
 
-  document.getElementById('roomCodeDisplay').textContent = `Room Code: ${data.roomCode}`;
+  document.getElementById('roomCodeDisplay').textContent = `Kod Pokoju: ${data.roomCode}`;
   document.getElementById('question').textContent = data.question || 'Oczekiwanie na start gry...';
 });
 
