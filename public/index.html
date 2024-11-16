@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cards Against Humanity Game</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Player list table on the left side -->
+  <div id="playerListContainer" style="display: none;">
+      <h3>Gracze</h3>
+      <table id="playerTable">
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Player rows will be added here by JavaScript -->
+        </tbody>
+      </table>
+  </div>
+
+  <div id="menu" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <button id="createRoom">Create Room</button>
+    <input type="text" id="joinCode" placeholder="Enter Room Code">
+    <button id="joinRoom">Join Room</button>
+  </div>
+
+  <div id="game" style="display: none;">
+    <div id="roomCodeDisplay"></div>
+    <div id="question"></div>
+    <div id="scores"></div>
+    <div id="timer"></div>
+    <div id="answers"></div>
+    
+    <!-- Start Game button, only visible to room creator -->
+    <button id="startGame" style="display: none;">Start Game</button>
+    
+    <!-- Buttons for submitting answers and choosing the winner -->
+    <button id="submitAnswer" style="display: none;">Submit Answer</button>
+    <button id="chooseWinner" style="display: none;">Choose Winner</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

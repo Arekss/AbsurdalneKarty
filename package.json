@@ -1,0 +1,20 @@
+{
+  "name": "cards-against-humanity-game",
+  "version": "1.0.0",
+  "description": "A multiplayer browser-based game inspired by Cards Against Humanity",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.1"
+  },
+  "devDependencies": {
+    "jest": "^27.0.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "author": "",
+  "license": "MIT"
+}

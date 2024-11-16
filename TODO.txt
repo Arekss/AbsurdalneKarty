@@ -1,0 +1,13 @@
+1. Remove player from room before game starts and update display
+4. Highlight answers at master display and choose winner based on clicking on answer
+5. Update questions and cards properly
+6. Count and display scores
+7. On providing wrong room code on join, keep old display
+8. startGame and startNewRound remove duplications
+
+
+DONE
+2. Highlight current round master
+
+CLEANUP
+1. Remove everything related  <!-- <div id="players"></div> --> commented in index.html
