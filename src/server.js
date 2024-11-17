@@ -92,7 +92,14 @@ io.on("connection", (socket) => {
       const winner = room.players.find((player) => player.id === data.winnerId);
       if (winner) {
         winner.incrementScore();
-        console.log(winner.name);
+
+      io.to(roomCode).emit("endRound", {
+                   question: room.currentQuestion,
+                    winningAnswer: data.winnerSAnswer,
+                    winnerName: winner.name
+                  });
+
+        console.log("winnername", winner.name);
   
         // Invoke the callback with a success response
         return callback({ success: true });

@@ -10,12 +10,22 @@ function generateRandomString(length) {
 
 const socket = io();
 
+let winneranswer = null;
+
+function updateLastRoundSummary(question, answer, winner) {
+    document.getElementById('lastRoundQuestion').textContent = question || 'None';
+    document.getElementById('lastRoundAnswer').textContent = answer || 'None';
+    document.getElementById('lastRoundWinner').textContent = winner || 'None';
+  }
+
+  
+
 let selectedAnswer = null; // Track the selected answer
 let selectedWinnerId = null; // Track the selected winner
 
 // Room creation and joining
 document.getElementById('createRoom').addEventListener('click', () => {
-  const playerName = prompt("Enter your name:");
+  const playerName = prompt("Podaj nick:");
   if (!playerName) return;
   //const playerName = generateRandomString(6);
   socket.emit('createRoom', { playerName });
@@ -24,7 +34,7 @@ document.getElementById('createRoom').addEventListener('click', () => {
 });
 
 document.getElementById('joinRoom').addEventListener('click', () => {
-  const playerName = prompt("Enter your name:");
+  const playerName = prompt("Podaj nick:");
   if (!playerName) return;
   //const playerName = generateRandomString(6);
   const roomCode = document.getElementById('joinCode').value;
@@ -34,6 +44,7 @@ document.getElementById('joinRoom').addEventListener('click', () => {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
   document.getElementById('playerListContainer').style.display = 'block';
+  document.getElementById('lastRoundSummary').style.display = 'block';
 });
 
 socket.on('roomCreated', (data) => {
@@ -42,6 +53,7 @@ socket.on('roomCreated', (data) => {
   document.getElementById('roomCodeDisplay').textContent = `Kod Pokoju: ${data.roomCode}`;
   document.getElementById('startGame').style.display = 'block';  // Show start game button for room creator
   document.getElementById('playerListContainer').style.display = 'block';
+  document.getElementById('lastRoundSummary').style.display = 'block';
 });
 
 // Start game button event listener
@@ -143,7 +155,7 @@ socket.on('updateAndDisplayCards', (data) => {
 // Add the event listener for the "chooseWinner" button on page load
 document.getElementById('chooseWinner').addEventListener('click', () => {
   if (selectedWinnerId) {
-    socket.emit('chooseWinner', { winnerId: selectedWinnerId }, (response) => {
+    socket.emit('chooseWinner', { winnerId: selectedWinnerId, winnerSAnswer: winnerAnswer }, (response) => {
       if (response.success) {
         // Emit the next event only after acknowledgment
         socket.emit('startNewRound');
@@ -174,6 +186,8 @@ function revealAnswersForMaster(data) {
       // Click event for marking the selected winner
       button.addEventListener('click', () => {
         selectedWinnerId = answerObj.playerId; // Track selected player's ID
+        winnerAnswer = '';
+        winnerAnswer = answerObj.answer;
         [...answersContainer.children].forEach(btn => btn.classList.remove('selected'));
         button.classList.add('selected'); // Highlight the selected button
       });
@@ -225,6 +239,17 @@ socket.on('onSumbitAnswerMarkPlayerGreen', (data) => {
       row.style.backgroundColor = 'lightgreen'; // Highlight the row in green
     }
   });
+});
+
+socket.on('endRound', (data) => {
+  // Extract the last round's details
+  const { question, winningAnswer, winnerName } = data;
+
+  // Update the summary display
+  updateLastRoundSummary(question, winningAnswer, winnerName);
+
+  // Notify players (optional)
+  console.log('Last round resolved:', { question, winningAnswer, winnerName });
 });
 
 socket.on('error', (data) => {
