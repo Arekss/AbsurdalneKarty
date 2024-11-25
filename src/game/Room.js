@@ -4,6 +4,7 @@ const Player = require("./Player");
 
 class Room {
   constructor(roomCode) {
+    this.gameStarted = 0;
     this.roomCode = roomCode;
     this.players = [];
     this.answers = [];
@@ -39,7 +40,6 @@ class Room {
   }
 
   initializeRound() {
-    console.log("answer cards current pool size :", this.answerCards.length);
     this.assignCards();
     this.assignQuestionCard();
     this.answers = [];
@@ -142,6 +142,44 @@ class Room {
       console.warn("Warning: Less than 10% of answers remaining in pool");
     }
   }
+
+
+  emitCardsToPlayers(io) {
+    this.players.forEach((player) => {
+      const playerSocket = io.sockets.sockets.get(player.id);
+      if (playerSocket) {
+        playerSocket.emit("updateAndDisplayCards", {
+          question: this.currentQuestion,
+          roundMaster: this.roundMaster,
+          hand: player.hand, // Emit the player's specific hand of answer cards
+        });
+      }
+    });
+  }
+
+  revealAnswersEmitData()
+  {
+    const data = {
+      question: this.currentQuestion,
+      answers: this.answers,
+      roundMaster: this.roundMaster,
+    }
+    return data;
+  }
+  
+  updateRoomDisplayEmitData()
+  {
+    const data = {
+      players: this.players,
+      currentQuestion: this.currentQuestion,
+      roundMaster: this.roundMaster,
+      roomCode: this.roomCode,
+      numOfQuestions: this.questions.length,
+      numOfAnswers: this.answerCards.length
+    }
+    return data;
+  }
+
 }
 
 module.exports = Room;

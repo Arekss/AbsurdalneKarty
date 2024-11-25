@@ -7,6 +7,25 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+  <div id="pageTitleContainer" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; margin-top: 20px;">
+    <h1 id="pageTitle" style="
+      font-size: 4rem; 
+      margin: 0; 
+      font-weight: bold; 
+      color: white; 
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      background: linear-gradient(90deg, #ff7eb3, #ff758c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding: 10px;
+    ">
+      Absurdalne Karty
+    </h1>
+  </div>
+  
+  
+  
   <!-- Player list table on the left side -->
   <div id="playerListContainer" style="display: none;">
       <table id="playerTable">
@@ -14,6 +33,7 @@
           <tr>
             <th>Gracz</th>
             <th>Status</th>
+            <th>Punkty</th>
           </tr>
         </thead>
         <tbody>
@@ -34,12 +54,26 @@
 </div>
 
   
-  
+<div id="roomCodeDisplay" style=" 
+  display: none; 
+  position: fixed; 
+  top: 10px; 
+  right: 10px; 
+  background-color: rgba(0, 0, 0, 0.8); 
+  color: white; 
+  padding: 20px; /* Dwukrotnie większe odstępy */
+  border-radius: 10px; /* Dwukrotnie większe zaokrąglenie */
+  font-size: 2.4rem; /* Dwukrotnie większy tekst */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Większy cień */
+  transform: scale(1.25); /* Skalowanie elementu */
+  transform-origin: top right; /* Skalowanie względem prawego górnego rogu */
+">
+</div>
+
   
 
   <div id="game" style="display: none;">
-    <div id="roomCodeDisplay"></div>
-    <div id="question"></div>
+    <div id="question"  style="font-weight: bold; font-size: 1.2rem;"></div>
     <div id="scores"></div>
     <div id="timer"></div>
     <div id="answers"></div>
@@ -52,11 +86,13 @@
     <button id="chooseWinner" style="display: none;">Zatwierdz Wygrana</button>
   </div>
 
-  <div id="lastRoundSummary" style="position: absolute; top: 50%; right: 10%; transform: translateY(-50%); width: 200px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); display: none;">
-    <h4>Ostatnia runda</h4>
-    <p><strong>Pytanie:</strong> <span id="lastRoundQuestion">None</span></p>
-    <p><strong>Odpowiedz:</strong> <span id="lastRoundAnswer">None</span></p>
-    <p><strong>Wygrany:</strong> <span id="lastRoundWinner">None</span></p>
+  <div id="lastRoundSummary" class="round-summary">
+    <p><strong>Pytania w puli:</strong> <span id="questionPoolCount">0</span></p>
+    <p><strong>Odpowiedzi w puli:</strong> <span id="answerPoolCount">0</span></p>
+    <h4 class="round-title">OSTATNIA RUNDA</h4>
+    <p><strong>Pytanie:</strong> <span id="lastRoundQuestion"></span></p>
+    <p><strong>Odpowiedz:</strong> <span id="lastRoundAnswer"></span></p>
+    <p><strong>Wygrany:</strong> <span id="lastRoundWinner"></span></p>
   </div>
   
 

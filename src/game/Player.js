@@ -16,17 +16,14 @@ class Player {
     const cardIndex = this.hand.indexOf(card);
     if (cardIndex > -1) {
       const removedCard = this.hand.splice(cardIndex, 1)[0]; // Remove and return the card
-      console.log(`Card "${removedCard}" successfully removed.`);
       //return removedCard; // uncomment if cards should land in reusable pool
     } else {
-      console.log(`Card "${card}" not found in hand.`);
      // return undefined;
     }
   }
   
 
   incrementScore() {
-    console.log("IMPORTANT2: cards hand: ", this.hand);
     this.score += 1; // Increment the player's score by 1
   }
 

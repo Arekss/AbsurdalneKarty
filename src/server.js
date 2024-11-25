@@ -20,20 +20,35 @@ io.on("connection", (socket) => {
     const roomCode = game.createRoom(data.playerName, socket.id);
     socket.join(roomCode);
     socket.emit("roomCreated", { roomCode });
-    io.to(roomCode).emit("updateRoomDisplay", game.getRoomState(roomCode));
+    room = game.rooms[roomCode];
+    io.to(roomCode).emit("updateRoomDisplay", room.updateRoomDisplayEmitData());
+
   });
 
   socket.on("joinRoom", (data) => {
+    const roomCode = data.roomCode;
+
+    room = game.rooms[roomCode];
+
+    if (room)
+    {
+      if(room.gameStarted === 1)
+      {
+        socket.emit("error", { message: "Blad. Gra zostala rozpoczeta." });
+        return;
+      }
+    }
     const joined = game.addPlayerToRoom(
-      data.roomCode,
+      roomCode,
       data.playerName,
       socket.id,
     );
     if (joined) {
-      socket.join(data.roomCode);
-      io.to(data.roomCode).emit("updateRoomDisplay", game.getRoomState(data.roomCode));
+      socket.join(roomCode);
+      room = game.rooms[roomCode];
+      io.to(roomCode).emit("updateRoomDisplay",room.updateRoomDisplayEmitData());
     } else {
-      socket.emit("error", { message: "Room not found or full" });
+      socket.emit("error", { message: "Blad. Pokoj nie istnieje lub jest pelny" });
     }
   });
 
@@ -41,46 +56,24 @@ io.on("connection", (socket) => {
   socket.on("startGame", (data) => {
     const roomCode = [...socket.rooms].find((code) => code !== socket.id);
     const room = game.rooms[roomCode];
-
+  
     if (room) {
+      room.gameStarted = 1;
       room.assignCards();
       room.assignQuestionCard();
-
-      // Emit the question and each player's answer cards
-      room.players.forEach((player) => {
-        const playerSocket = io.sockets.sockets.get(player.id);
-        if (playerSocket) {
-          playerSocket.emit("updateAndDisplayCards", {
-            question: room.currentQuestion,
-            roundMaster: room.roundMaster,
-            hand: player.hand, // Emit the player's specific hand of answer cards
-          });
-        }
-      });
+      room.emitCardsToPlayers(io);
     }
   });
-
   
+  // 'startNewRound' event handler
   socket.on("startNewRound", (data) => {
-    console.log("start of startNewRound  ");
     const roomCode = [...socket.rooms].find((code) => code !== socket.id);
     const room = game.rooms[roomCode];
-    if (room){
+  
+    if (room) {
       room.initializeRound();
-
-      room.players.forEach((player) => {
-        const playerSocket = io.sockets.sockets.get(player.id);
-        if (playerSocket) {
-          playerSocket.emit("updateAndDisplayCards", {
-            question: room.currentQuestion,
-            roundMaster: room.roundMaster,
-            hand: player.hand, // Emit the player's specific hand of answer cards
-          });
-          console.log("startNewRound for player ", player.name);
-        }
-      });
-
-      io.to(roomCode).emit("updateRoomDisplay", game.getRoomState(roomCode));
+      room.emitCardsToPlayers(io);
+      io.to(roomCode).emit("updateRoomDisplay", room.updateRoomDisplayEmitData());
     }
   });
 
@@ -99,8 +92,6 @@ io.on("connection", (socket) => {
                     winnerName: winner.name
                   });
 
-        console.log("winnername", winner.name);
-  
         // Invoke the callback with a success response
         return callback({ success: true });
       }
@@ -115,20 +106,14 @@ io.on("connection", (socket) => {
     const roomCode = [...socket.rooms].find((code) => code !== socket.id);
     const room = game.rooms[roomCode];
     if (room) {
-      console.log("IMPORTANT: answer: ", data.answer);
       room.submitAnswer(socket.id, data.answer);
-      console.log(room.getState().answers);
 
       io.to(roomCode).emit("onSumbitAnswerMarkPlayerGreen", {
         playerId: socket.id,
       });
 
       if (room.isReadyForNextRound()) {
-        io.to(roomCode).emit("revealAnswers", {
-          question: room.currentQuestion,
-          answers: room.getState().answers,
-          roundMaster: room.roundMaster,
-        });
+         io.to(roomCode).emit("revealAnswers", room.revealAnswersEmitData());
       }
     }
   });

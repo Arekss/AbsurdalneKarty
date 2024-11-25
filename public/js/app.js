@@ -19,41 +19,68 @@ function updateLastRoundSummary(question, answer, winner) {
   }
 
   
+function mainMenuDisplay()
+{
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('pageTitleContainer').style.display = 'block';
+  document.getElementById('game').style.display = 'none';
+}
+
+function gameDisplay()
+{
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('pageTitleContainer').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('playerListContainer').style.display = 'block';
+  document.getElementById('lastRoundSummary').style.display = 'block';
+  document.getElementById('roomCodeDisplay').style.display = 'block';
+}
+
 
 let selectedAnswer = null; // Track the selected answer
 let selectedWinnerId = null; // Track the selected winner
 
 // Room creation and joining
 document.getElementById('createRoom').addEventListener('click', () => {
-  const playerName = prompt("Podaj nick:");
-  if (!playerName) return;
-  //const playerName = generateRandomString(6);
+ // const playerName = prompt("Podaj nick:");
+  //if (!playerName) return;
+  const playerName = generateRandomString(6);
+
+  if (playerName.length > 15) {
+    alert("Nick nie może być dłuższy niż 15 znaków. Skróć go.");
+    return;
+  }
+
   socket.emit('createRoom', { playerName });
 
 
 });
 
 document.getElementById('joinRoom').addEventListener('click', () => {
-  const playerName = prompt("Podaj nick:");
-  if (!playerName) return;
-  //const playerName = generateRandomString(6);
+ // const playerName = prompt("Podaj nick:");
+  //if (!playerName) return;
+  const playerName = generateRandomString(14);
+
+  if (playerName.length > 15) {
+    alert("Nick nie może być dłuższy niż 15 znaków. Skróć go.");
+    return;
+  }
+
   const roomCode = document.getElementById('joinCode').value;
   socket.emit('joinRoom', { roomCode, playerName });
 
+  if (data.error) {
+    return; // Przerwij dalsze wykonywanie kodu
+  }
+
   // Hide menu and show game view for the player who joins
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-  document.getElementById('playerListContainer').style.display = 'block';
-  document.getElementById('lastRoundSummary').style.display = 'block';
+  gameDisplay();
 });
 
 socket.on('roomCreated', (data) => {
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
+  gameDisplay();
   document.getElementById('roomCodeDisplay').textContent = `Kod Pokoju: ${data.roomCode}`;
   document.getElementById('startGame').style.display = 'block';  // Show start game button for room creator
-  document.getElementById('playerListContainer').style.display = 'block';
-  document.getElementById('lastRoundSummary').style.display = 'block';
 });
 
 // Start game button event listener
@@ -64,6 +91,7 @@ document.getElementById('startGame').addEventListener('click', () => {
 
 // Update room view when players join or when the game starts
 socket.on('updateRoomDisplay', (data) => {
+  console.log('Podgladanie odpowiedzi innych graczy w zapytaniach HTTP to niemozebne oszustwo!');
   const playerTableBody = document.getElementById('playerTable').querySelector('tbody');
   playerTableBody.innerHTML = ''; // Clear existing rows
 
@@ -80,24 +108,33 @@ socket.on('updateRoomDisplay', (data) => {
     // Create the status cell for the round master indicator
     const roundMasterCell = document.createElement('td');
     if (player.id === data.roundMaster) {
-      roundMasterCell.textContent = 'mistrz rundy';
+      roundMasterCell.textContent = 'MISTRZ RUNDY';
+      roundMasterCell.style.backgroundColor = 'lightgreen';
       roundMasterCell.classList.add('round-master-indicator'); // Apply purple styling
     }
+    else{
+      roundMasterCell.style.backgroundColor = 'yellow';
+    }
+
+    const scoreCell = document.createElement('td');
+    scoreCell.textContent = player.score;
 
     // Append the cells to the row
     row.appendChild(nameCell);
     row.appendChild(roundMasterCell);
+    row.appendChild(scoreCell);
 
     // Append the row to the table body
     playerTableBody.appendChild(row);
   });
 
   // Update other dynamic elements
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
+  gameDisplay();
 
   document.getElementById('roomCodeDisplay').textContent = `Kod Pokoju: ${data.roomCode}`;
-  document.getElementById('question').textContent = data.question || 'Oczekiwanie na start gry...';
+  document.getElementById('question').textContent = data.currentQuestion || 'Oczekiwanie na start gry...';
+  document.getElementById('questionPoolCount').textContent = data.numOfQuestions;
+  document.getElementById('answerPoolCount').textContent = data.numOfAnswers;
 });
 
 
@@ -236,7 +273,10 @@ socket.on('onSumbitAnswerMarkPlayerGreen', (data) => {
 
   rows.forEach(row => {
     if (row.getAttribute('data-player-id') === data.playerId) {
-      row.style.backgroundColor = 'lightgreen'; // Highlight the row in green
+      const specificCell = row.querySelector('td:nth-child(2)'); // Select the second cell in the row
+      if (specificCell) {
+        specificCell.style.backgroundColor = 'lightgreen'; // Highlight the specific cell in green
+      }
     }
   });
 });
@@ -249,7 +289,6 @@ socket.on('endRound', (data) => {
   updateLastRoundSummary(question, winningAnswer, winnerName);
 
   // Notify players (optional)
-  console.log('Last round resolved:', { question, winningAnswer, winnerName });
 });
 
 socket.on('error', (data) => {
@@ -258,8 +297,7 @@ socket.on('error', (data) => {
   switch (data.message) {
     case 'Room not found or full':
       // Specific action for room-related errors
-      document.getElementById('menu').style.display = 'block';
-      document.getElementById('game').style.display = 'none';
+      mainMenuDisplay();
       document.getElementById('joinCode').value = ''; // Clear the room code field if needed
       break;
 
@@ -270,8 +308,7 @@ socket.on('error', (data) => {
 
     default:
       // General case: if error is not specifically handled, reset to menu view
-      document.getElementById('menu').style.display = 'block';
-      document.getElementById('game').style.display = 'none';
+      mainMenuDisplay();
       break;
   }
 });

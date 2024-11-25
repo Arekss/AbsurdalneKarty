@@ -48,6 +48,7 @@ class Game {
       room.removePlayer(playerId);
       if (room.isEmpty()) {
         delete this.rooms[roomCode];
+        console.log("Room deleted. Current number of rooms:", Object.keys(this.rooms).length);
       }
     }
   }

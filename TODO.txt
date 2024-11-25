@@ -1,16 +1,20 @@
 1. Remove player from room before game starts and update display
-4. Highlight answers at master display and choose winner based on clicking on answer
 5. Update questions and cards properly
-6. Count and display scores
-7. On providing wrong room code on join, keep old display
-8. startGame and startNewRound remove duplications
-9. Podaj nick bez pop upu
-11. Dodaj score do tablicy
-12. Z prawej strony wyswietl poprzednie pytanie i odpowiedz
-13. Dodaj do statusu udzielono odpowiedzi na zielono
+9. Podaj nick bez pop upu // moze jednak nie
+14. wymiana kart co 5 rund
+15. Z lewej stworz z prawej dolacz
 
-DONE
-2. Highlight current round master
+18 wybor zestawu kart
+
+19 Dolaczanie i wychodzenie z pokoju w trakcie
+
+23. wpisywanie kodu wielkimi literami
+24 brute force security
+
 
 CLEANUP
 1. Remove everything related  <!-- <div id="players"></div> --> commented in index.html
+
+PARTIALLY DONE
+25. emit only necessary info 
+26. update widocznosci kontenerow w jedej funkcji 
