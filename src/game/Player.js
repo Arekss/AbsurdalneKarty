@@ -15,20 +15,24 @@ class Player {
   removeCard(card) {
     const cardIndex = this.hand.indexOf(card);
     if (cardIndex > -1) {
-      const removedCard = this.hand.splice(cardIndex, 1)[0]; // Remove and return the card
+      const removedCard = this.hand.splice(cardIndex, 1)[0]; 
       //return removedCard; // uncomment if cards should land in reusable pool
+      
     } else {
      // return undefined;
     }
   }
   
+  resetHand() {
+    this.hand = []; // Clear the player's hand for the next round
+  }
+
+  assignRerolledCards(cards) {
+    this.hand.push(...cards);
+  }
 
   incrementScore() {
     this.score += 1; // Increment the player's score by 1
-  }
-
-  resetHand() {
-    this.hand = []; // Clear the player's hand for the next round
   }
 
   getInfo() {

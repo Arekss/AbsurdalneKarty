@@ -72,6 +72,23 @@ class Room {
     return this.players[(currentIndex + 1) % this.players.length].id;
   }
 
+
+
+  rerollCards(playerId) {
+    const player = this.players.find((p) => p.id === playerId);
+    // Sprawdź, czy gracz istnieje
+    if (!player) {
+      console.error(`Player of ID ${playerId} does not exist`);
+      return;
+    }
+  
+    this.answerCards.push(...player.hand);
+    player.resetHand();
+    this.answerCards = this.shuffleArray(this.answerCards);
+    const newCards = this.answerCards.splice(0, 5);
+    player.assignRerolledCards(newCards);
+  }
+
   submitAnswer(playerId, answer) {
     // Check if the player has already submitted an answer
     const existingAnswer = this.answers.find((a) => a.playerId === playerId);
@@ -79,8 +96,11 @@ class Room {
       this.answers.push({ playerId, answer }); // Add new answer
       const player = this.players.find((p) => p.id === playerId);
       player.removeCard(answer);
+      this.rerollCards(playerId);
     }
   }
+
+  
 
   chooseWinner(winnerId) {
     if (this.answers[winnerId]) {

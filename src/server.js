@@ -118,10 +118,22 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+  socket.on("disconnect", () => { // code copied from startNewRound besides removePlayer and console.log
+    const roomCode = Object.keys(game.rooms).find((code) =>
+      game.rooms[code].players.some((player) => player.id === socket.id)
+    );
+    const room = game.rooms[roomCode]; 
+
+    console.log("User disconnected:", socket.id); 
     game.removePlayer(socket.id);
+
+    if (room) {
+      room.initializeRound();
+      room.emitCardsToPlayers(io);
+      io.to(roomCode).emit("updateRoomDisplay", room.updateRoomDisplayEmitData());
+    }
   });
+
 });
 
 server.listen(PORT, () => {

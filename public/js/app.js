@@ -42,9 +42,9 @@ let selectedWinnerId = null; // Track the selected winner
 
 // Room creation and joining
 document.getElementById('createRoom').addEventListener('click', () => {
- // const playerName = prompt("Podaj nick:");
-  //if (!playerName) return;
-  const playerName = generateRandomString(6);
+  const playerName = prompt("Podaj nick:");
+  if (!playerName) return;
+  //const playerName = generateRandomString(6);
 
   if (playerName.length > 15) {
     alert("Nick nie może być dłuższy niż 15 znaków. Skróć go.");
@@ -57,9 +57,9 @@ document.getElementById('createRoom').addEventListener('click', () => {
 });
 
 document.getElementById('joinRoom').addEventListener('click', () => {
- // const playerName = prompt("Podaj nick:");
-  //if (!playerName) return;
-  const playerName = generateRandomString(14);
+  const playerName = prompt("Podaj nick:");
+  if (!playerName) return;
+  //const playerName = generateRandomString(14);
 
   if (playerName.length > 15) {
     alert("Nick nie może być dłuższy niż 15 znaków. Skróć go.");
@@ -145,7 +145,7 @@ document.getElementById('submitAnswer').addEventListener('click', () => {
     document.getElementById('submitAnswer').style.display = 'none';  // Hide after submitting
     selectedAnswer = null;  // Reset the selected answer
   } else {
-    alert("Please select an answer before submitting!");
+    alert("Wybierz odpowiedz przed zatwierdzeniem!");
   }
 });
 

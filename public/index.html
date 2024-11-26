@@ -89,11 +89,18 @@
   <div id="lastRoundSummary" class="round-summary">
     <p><strong>Pytania w puli:</strong> <span id="questionPoolCount">0</span></p>
     <p><strong>Odpowiedzi w puli:</strong> <span id="answerPoolCount">0</span></p>
+  
+    <!-- <div id="rerollContainer" style="position: relative;">
+      <input type="checkbox" id="rerollCheckbox" disabled>
+      <label id="rerollLabel" for="rerollCheckbox">Wymiana kart (dostępne za 5 rund)</label>
+    </div> --> <!-- poki co karty beda wymieniane zawsze co runde -->
+  
     <h4 class="round-title">OSTATNIA RUNDA</h4>
     <p><strong>Pytanie:</strong> <span id="lastRoundQuestion"></span></p>
     <p><strong>Odpowiedz:</strong> <span id="lastRoundAnswer"></span></p>
     <p><strong>Wygrany:</strong> <span id="lastRoundWinner"></span></p>
   </div>
+  
   
 
   <script src="/socket.io/socket.io.js"></script>
